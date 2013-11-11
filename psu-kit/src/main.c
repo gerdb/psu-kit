@@ -32,4 +32,7 @@ int main( void )
 	//Initialize the PWM module
 	PWM_Init();
 
+	// Set the converter voltage
+	PWM_SetBuckPWM(64);
+
 }

@@ -26,6 +26,6 @@
 
 //Function prototypes
 void PWM_Init(void);
-
+void PWM_SetBuckPWM (unsigned char val);
 
 #endif /* PWM_H_ */

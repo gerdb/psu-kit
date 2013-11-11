@@ -41,7 +41,19 @@ void PWM_Init(void) {
 	// Set period time to 31.25kHz
   	ICR1 = 0x0080;
 
- 	// Set PWM to 50%
+ 	// Set PWM of charge pump to 50%
   	OCR1A = 0x0040;
+ 	// Set PWM of buck to 0%
+  	OCR1B = 0x0000;
+}
+
+/*
+ * Set the PWM to the OCR1B output (buck-converter)
+ *
+ * \param val PWM value from 0 to 128=100%
+ */
+void PWM_SetBuckPWM (unsigned char val) {
+
+	OCR1B = val;
 }
 
