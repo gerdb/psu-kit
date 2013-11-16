@@ -1,9 +1,9 @@
 /*
  *  Project:      psu-kit
- *  File:         pwm.c
+ *  File:         key.h
  *  Author:       gerd bartelt - www.sebulli.com
  *
- *  Description:  main file
+ *  Description:  header file for key.c
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,47 +20,19 @@
  *
  */
 
+#ifndef KEY_H_
+#define KEY_H_
 
-#include <avr/io.h>
-#include "project.h"
-#include "pwm.h"
-#include "led.h"
-#include "adc.h"
-#include "controller.h"
-#include "model.h"
-#include "view.h"
-#include "key.h"
+// Defines
+#define SW1 0
+#define SW2 1
+#define DEBOUNCE 20
 
-/*
- * Main function
- */
-int main( void )
-{
-	volatile unsigned int i;
+// Function prototypes
+void KEY_Init(void);
+void KEY_Task(void);
+unsigned char KEY_Pressed(unsigned char key);
+unsigned char KEY_Click(unsigned char key);
 
-	//Initialize all modules
-	PWM_Init();
-	LED_Init();
-	ADC_Init();
-	KEY_Init();
-	CONTROLLER_Init();
-	VIEW_Init();
 
-	// Set the converter voltage
-	PWM_SetBuckPWM(64);
-
-	while(1) {
-
-		ADC_Task();
-		LED_Task();
-		KEY_Task();
-		CONTROLLER_Task();
-		VIEW_Task();
-
-		for (i=0; i<1000;i++) {
-			;
-		}
-
-	}
-
-}
+#endif /* KEY_H_ */
