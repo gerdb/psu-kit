@@ -22,6 +22,7 @@
 
 
 #include <avr/io.h>
+#include "project.h"
 #include "led.h"
 
 /*
@@ -101,16 +102,32 @@ void LED_Init(void) {
  * Switch off all 6 digits
  */
 void LED_DigitsOff(void) {
+#ifdef DISPLAY_LED_CC
 	PORTD |= 0b11100000;
 	PORTB |= 0b00011001;
+#endif
+
+#ifdef DISPLAY_LED_CA
+	PORTD &= ~0b11100000;
+	PORTB &= ~0b00011001;
+#endif
 }
 
 /*
  * Switch off all segments
  */
 void LED_SegmentsOff(void) {
+
+#ifdef DISPLAY_LED_CC
 	PORTD &= ~0b00011111;
 	PORTB &= ~0b11000000;
+#endif
+
+#ifdef DISPLAY_LED_CA
+	PORTD |= 0b00011111;
+	PORTB |= 0b11000000;
+#endif
+
 }
 
 /*
@@ -120,8 +137,17 @@ void LED_SegmentsOn(unsigned char c) {
 	unsigned char led_c;
 
 	led_c = led_font[c-'0'];
-	PORTD |= led_c & 0b00011111;
-	PORTB |= led_c & 0b11000000;
+
+#ifdef DISPLAY_LED_CC
+	PORTD |= (led_c & 0b00011111);
+	PORTB |= (led_c & 0b11000000);
+#endif
+
+#ifdef DISPLAY_LED_CA
+	PORTD &= ~(led_c & 0b00011111);
+	PORTB &= ~(led_c & 0b11000000);
+#endif
+
 }
 
 
@@ -130,12 +156,25 @@ void LED_SegmentsOn(unsigned char c) {
  */
 void LED_DigitOn(unsigned char digit) {
 	switch (digit) {
-	case 0: PORTD &=~_BV(PB5); break;
-	case 1: PORTD &=~_BV(PB6); break;
-	case 2: PORTD &=~_BV(PB7); break;
-	case 3: PORTB &=~_BV(PB0); break;
-	case 4: PORTB &=~_BV(PB3); break;
-	case 5: PORTB &=~_BV(PB4); break;
+
+#ifdef DISPLAY_LED_CC
+	case 0: PORTD &= ~_BV(PB5); break;
+	case 1: PORTD &= ~_BV(PB6); break;
+	case 2: PORTD &= ~_BV(PB7); break;
+	case 3: PORTB &= ~_BV(PB0); break;
+	case 4: PORTB &= ~_BV(PB3); break;
+	case 5: PORTB &= ~_BV(PB4); break;
+#endif
+
+#ifdef DISPLAY_LED_CA
+	case 0: PORTD |= _BV(PB5); break;
+	case 1: PORTD |= _BV(PB6); break;
+	case 2: PORTD |= _BV(PB7); break;
+	case 3: PORTB |= _BV(PB0); break;
+	case 4: PORTB |= _BV(PB3); break;
+	case 5: PORTB |= _BV(PB4); break;
+#endif
+
 	}
 
 }

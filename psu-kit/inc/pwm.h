@@ -1,6 +1,6 @@
 /*
  *  Project:      psu-kit
- *  File:         pwm.c
+ *  File:         pwm.h
  *  Author:       gerd bartelt - www.sebulli.com
  *
  *  Description:  header file for pwm.c

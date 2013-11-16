@@ -1,9 +1,9 @@
 /*
  *  Project:      psu-kit
- *  File:         led.c
+ *  File:         led.h
  *  Author:       gerd bartelt - www.sebulli.com
  *
- *  Description:  header file for pwm.c
+ *  Description:  header file for led.c
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
