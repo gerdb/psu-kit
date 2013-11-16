@@ -24,6 +24,19 @@
 #ifndef MODEL_H_
 #define MODEL_H_
 
+/*
+ * Typedefs
+ */
 
+typedef enum {
+	SP_DROP
+}
+t_SetupParam;
 
+/*
+ * global variables
+ */
+extern unsigned char setup_active;
+extern t_SetupParam setup_param;
+extern unsigned char voltage_drop;
 #endif /* MODEL_H_ */

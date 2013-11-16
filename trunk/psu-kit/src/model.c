@@ -23,3 +23,8 @@
 #include <avr/io.h>
 #include "project.h"
 #include "controller.h"
+#include "model.h"
+
+unsigned char setup_active = 1;
+t_SetupParam setup_param = SP_DROP;
+unsigned char voltage_drop = 5;

@@ -25,6 +25,7 @@
 #include "view.h"
 #include "led.h"
 #include "adc.h"
+#include "model.h"
 
 /*
  * Initialize the view
@@ -38,6 +39,21 @@ void VIEW_Init(void) {
  *
  */
 void VIEW_Task(void) {
-	LED_SetNumber(0, ADC_GetScaled(ADC_CHAN_V_OUT));
-	LED_SetNumber(1, ADC_GetScaled(ADC_CHAN_I_OUT));
+
+
+	if (setup_active) {
+		// Setup menu
+		switch (setup_param) {
+		case SP_DROP:
+			LED_SetText(0,"DRP");
+			LED_SetNumber(1, voltage_drop,1);
+			break;
+		}
+
+	} else {
+
+		// Display the output voltage and current
+		LED_SetNumber(0, ADC_GetScaled(ADC_CHAN_V_OUT), 0);
+		LED_SetNumber(1, ADC_GetScaled(ADC_CHAN_I_OUT), 0);
+	}
 }
