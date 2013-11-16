@@ -163,21 +163,21 @@ void LED_DigitOn(unsigned char digit) {
 	switch (digit) {
 
 #ifdef DISPLAY_LED_CC
-	case 0: PORTD &= ~_BV(PB5); break;
-	case 1: PORTD &= ~_BV(PB6); break;
-	case 2: PORTD &= ~_BV(PB7); break;
-	case 3: PORTB &= ~_BV(PB0); break;
-	case 4: PORTB &= ~_BV(PB3); break;
-	case 5: PORTB &= ~_BV(PB4); break;
+	case 0: PORTD &= ~_BV(PD5); break;
+	case 1: PORTD &= ~_BV(PD6); break;
+	case 2: PORTD &= ~_BV(PD7); break;
+	case 3: PORTB &= ~_BV(PD0); break;
+	case 4: PORTB &= ~_BV(PD3); break;
+	case 5: PORTB &= ~_BV(PD4); break;
 #endif
 
 #ifdef DISPLAY_LED_CA
-	case 0: PORTD |= _BV(PB5); break;
-	case 1: PORTD |= _BV(PB6); break;
-	case 2: PORTD |= _BV(PB7); break;
-	case 3: PORTB |= _BV(PB0); break;
-	case 4: PORTB |= _BV(PB3); break;
-	case 5: PORTB |= _BV(PB4); break;
+	case 0: PORTD |= _BV(PD5); break;
+	case 1: PORTD |= _BV(PD6); break;
+	case 2: PORTD |= _BV(PD7); break;
+	case 3: PORTB |= _BV(PD0); break;
+	case 4: PORTB |= _BV(PD3); break;
+	case 5: PORTB |= _BV(PD4); break;
 #endif
 
 	}
