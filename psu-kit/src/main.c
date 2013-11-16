@@ -25,6 +25,7 @@
 #include "project.h"
 #include "pwm.h"
 #include "led.h"
+#include "adc.h"
 
 
 /*
@@ -47,15 +48,15 @@ int main( void )
 	LED_SetText(1, "ABC");
 
 	while(1) {
-		ADC_Start(0x0E);
 
+		ADC_Task();
 		LED_Task();
 
 		for (i=0; i<1000;i++) {
 			;
 		}
-		LED_SetNumber(0,ADC_GetResult());
-
+		LED_SetNumber(0, ADC_GetScaled(ADC_CHAN_V_OUT));
+		LED_SetNumber(1, ADC_GetScaled(ADC_CHAN_I_OUT));
 	}
 
 }
