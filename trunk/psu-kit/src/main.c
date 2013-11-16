@@ -42,6 +42,8 @@ int main( void )
 
 	LED_Init();
 
+	LED_SetNumber(0,543);
+	LED_SetNumber(1,987);
 
 	while(1) {
 		LED_Task();
