@@ -32,7 +32,7 @@
 /*
  * local variables
  */
-unsigned char digit[6] = {'0','1','2','3','4','5'};
+unsigned char digit[6] = {' ',' ',' ',' ',' ',' '};
 unsigned char led_mux = 0;
 unsigned char digit_blink[2] = {0,0};
 unsigned char blink = 0;
@@ -191,6 +191,27 @@ void LED_DigitOn(unsigned char digit) {
 void LED_SetBlinking(unsigned char display, unsigned char blink) {
 	digit_blink[display] = blink;
 }
+
+/*
+ * Set a number from 0..999 to the display
+ *
+ * \param display: Display number 0 or 1
+ * \param number: an integer from 0 to 999
+ *
+ */
+void LED_SetNumber(unsigned char display, unsigned int number) {
+	unsigned char idigit;
+	int i;
+	// Select the digit
+	idigit = display * 3;
+
+	// Set all 3 digits
+	for (i = 0; i<3; i++) {
+		digit[idigit+2-i] = '0' + (number % 10);
+		number /= 10;
+	}
+}
+
 
 /*
  * LED Task

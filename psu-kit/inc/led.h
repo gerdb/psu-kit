@@ -38,5 +38,6 @@
 void LED_Init(void);
 void LED_Task(void);
 void LED_SetBlinking(unsigned char display, unsigned char blink);
+void LED_SetNumber(unsigned char display, unsigned int number);
 
 #endif /* LED_H_ */
