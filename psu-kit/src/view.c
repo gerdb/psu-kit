@@ -23,3 +23,21 @@
 #include <avr/io.h>
 #include "project.h"
 #include "view.h"
+#include "led.h"
+#include "adc.h"
+
+/*
+ * Initialize the view
+ */
+void VIEW_Init(void) {
+
+}
+
+/*
+ * View task
+ *
+ */
+void VIEW_Task(void) {
+	LED_SetNumber(0, ADC_GetScaled(ADC_CHAN_V_OUT));
+	LED_SetNumber(1, ADC_GetScaled(ADC_CHAN_I_OUT));
+}

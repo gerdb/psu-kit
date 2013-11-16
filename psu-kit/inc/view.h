@@ -24,6 +24,7 @@
 #ifndef VIEW_H_
 #define VIEW_H_
 
-
+// Function prototypes
+void VIEW_Init(void);
 
 #endif /* VIEW_H_ */
