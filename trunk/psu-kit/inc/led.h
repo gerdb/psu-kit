@@ -1,9 +1,9 @@
 /*
  *  Project:      psu-kit
- *  File:         pwm.c
+ *  File:         led.c
  *  Author:       gerd bartelt - www.sebulli.com
  *
- *  Description:  main file
+ *  Description:  header file for pwm.c
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,34 +20,22 @@
  *
  */
 
-
-#include <avr/io.h>
-#include "pwm.h"
-#include "led.h"
+#ifndef LED_H_
+#define LED_H_
 
 
-/*
- * Main function
- */
-int main( void )
-{
-	volatile unsigned int i;
+// Defines
+/* 7-segment character bit assignments */
+#define SEG_A     _BV(PB0)
+#define SEG_B     _BV(PB1)
+#define SEG_C     _BV(PB2)
+#define SEG_D     _BV(PB3)
+#define SEG_E     _BV(PB4)
+#define SEG_F     _BV(PB6)
+#define SEG_G     _BV(PB7)
 
-	//Initialize the PWM module
-	PWM_Init();
+//Function prototypes
+void LED_Init(void);
+void LED_Task(void);
 
-	// Set the converter voltage
-	PWM_SetBuckPWM(64);
-
-	LED_Init();
-
-
-	while(1) {
-		LED_Task();
-		for (i=0; i<100;i++) {
-			;
-		}
-
-	}
-
-}
+#endif /* LED_H_ */

@@ -1,0 +1,158 @@
+/*
+ *  Project:      psu-kit
+ *  File:         led.c
+ *  Author:       gerd bartelt - www.sebulli.com
+ *
+ *  Description:  LED display control
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+
+#include <avr/io.h>
+#include "led.h"
+
+/*
+ * local functions
+ */
+
+/*
+ * local variables
+ */
+unsigned char digit[6] = {'0','1','2','3','4','5'};
+unsigned char led_mux = 0;
+
+// LED font
+const unsigned char led_font[48] = {
+	SEG_A | SEG_B | SEG_C | SEG_D | SEG_E | SEG_F		 ,	// LED character: "0"
+			SEG_B | SEG_C								 ,	// LED character: "1"
+	SEG_A | SEG_B |      	SEG_D | SEG_E |      	SEG_G,	// LED character: "2"
+	SEG_A | SEG_B | SEG_C | SEG_D |            		SEG_G,	// LED character: "3"
+			SEG_B | SEG_C |            		SEG_F | SEG_G,	// LED character: "4"
+	SEG_A |      	SEG_C | SEG_D |      	SEG_F | SEG_G, 	// LED character: "5"
+	SEG_A |      	SEG_C | SEG_D | SEG_E | SEG_F | SEG_G,	// LED character: "6"
+	SEG_A | SEG_B | SEG_C								 ,	// LED character: "7"
+	SEG_A | SEG_B | SEG_C | SEG_D | SEG_E | SEG_F | SEG_G,	// LED character: "8"
+	SEG_A | SEG_B | SEG_C | SEG_D |      	SEG_F | SEG_G, 	// LED character: "9"
+	0													 ,	// LED character: ":"
+	0													 ,  // LED character: ";"
+	SEG_A |                        			SEG_F | SEG_G, 	// LED character: "<"
+							SEG_D |      			SEG_G,	// LED character: "="
+					SEG_C | SEG_D | 				SEG_G,	// LED character: ">"
+	SEG_A | SEG_B |            		SEG_E |      	SEG_G,	// LED character: "?"
+	0                                        			 ,	// LED character: "@"
+	SEG_A | SEG_B | SEG_C |      	SEG_E | SEG_F | SEG_G, 	// LED character: "A"
+					SEG_C | SEG_D | SEG_E | SEG_F | SEG_G,	// LED character: "b"
+							SEG_D | SEG_E |      	SEG_G,	// LED character: "c"
+			SEG_B | SEG_C | SEG_D | SEG_E |      	SEG_G,	// LED character: "d"
+	SEG_A |           		SEG_D | SEG_E | SEG_F | SEG_G,	// LED character: "E"
+	SEG_A |                  		SEG_E | SEG_F | SEG_G,  // LED character: "f"
+	SEG_A | SEG_B | SEG_C | SEG_D |			SEG_F | SEG_G, 	// LED character: "g"
+					SEG_C |      	SEG_E | SEG_F | SEG_G,	// LED character: "h"
+					SEG_C            					 ,	// LED character: "i"
+	SEG_A | SEG_B | SEG_C | SEG_D                  		 ,	// LED character: "J"
+							SEG_D |      	SEG_F | SEG_G,	// LED character: "k"
+							SEG_D | SEG_E | SEG_F      	 ,	// LED character: "L"
+	SEG_A | SEG_B | SEG_C |      	SEG_E | SEG_F      	 ,	// LED character: "M"
+					SEG_C |      	SEG_E |      	SEG_G,	// LED character: "n"
+					SEG_C | SEG_D | SEG_E |      	SEG_G,	// LED character: "o"
+	SEG_A | SEG_B |            		SEG_E | SEG_F | SEG_G,	// LED character: "P"
+	SEG_A | SEG_B | SEG_C |            		SEG_F | SEG_G,	// LED character: "q"
+									SEG_E |      	SEG_G,	// LED character: "r"
+	SEG_A |      	SEG_C | SEG_D |      	SEG_F | SEG_G,	// LED character: "S"
+							SEG_D | SEG_E | SEG_F | SEG_G,	// LED character: "t"
+					SEG_C | SEG_D | SEG_E            	 ,	// LED character: "u"
+							SEG_D | SEG_E            	 ,	// LED character: "v"
+			SEG_B | SEG_C | SEG_D | SEG_E | SEG_F | SEG_G,	// LED character: "W"
+			SEG_B | SEG_C |     	SEG_E | SEG_F | SEG_G,	// LED character: "X"
+			SEG_B | SEG_C | SEG_D |			SEG_F | SEG_G,	// LED character: "Y"
+	SEG_A | SEG_B |      	SEG_D | SEG_E |      	SEG_G,	// LED character: "Z"
+			SEG_B | 				SEG_E | 		SEG_G,	// LED character: "["
+	0													 ,	// LED character: "\"
+					SEG_C | 				SEG_F | SEG_G,  // LED character: "]"
+	SEG_A												 , 	// LED character: "^"
+							SEG_D              				// LED character: "_"
+};
+
+
+/*
+ * Initialize the LED module
+ */
+void LED_Init(void) {
+
+	// LED Ports as output
+	DDRD  = 0b11111111;
+	DDRB |= 0b11011001;
+}
+
+/*
+ * Switch off all 6 digits
+ */
+void LED_DigitsOff(void) {
+	PORTD |= 0b11100000;
+	PORTB |= 0b00011001;
+}
+
+/*
+ * Switch off all segments
+ */
+void LED_SegmentsOff(void) {
+	PORTD &= ~0b00011111;
+	PORTB &= ~0b11000000;
+}
+
+/*
+ * Switch on segments
+ */
+void LED_SegmentsOn(unsigned char c) {
+	unsigned char led_c;
+
+	led_c = led_font[c-'0'];
+	PORTD |= led_c & 0b00011111;
+	PORTB |= led_c & 0b11000000;
+}
+
+
+/*
+ * Switch off one digit
+ */
+void LED_DigitOn(unsigned char digit) {
+	switch (digit) {
+	case 0: PORTD &=~_BV(PB5); break;
+	case 1: PORTD &=~_BV(PB6); break;
+	case 2: PORTD &=~_BV(PB7); break;
+	case 3: PORTB &=~_BV(PB0); break;
+	case 4: PORTB &=~_BV(PB3); break;
+	case 5: PORTB &=~_BV(PB4); break;
+	}
+
+}
+
+/*
+ * LED Task
+ *
+ */
+void LED_Task(void) {
+	LED_DigitsOff();
+	LED_SegmentsOff();
+	LED_SegmentsOn(digit[led_mux]);
+	LED_DigitOn(led_mux);
+
+	// Next digit
+	led_mux ++;
+	if (led_mux >=6)
+		led_mux = 0;
+}
+
