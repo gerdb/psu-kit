@@ -41,24 +41,23 @@ int main( void )
 	PWM_Init();
 	LED_Init();
 	ADC_Init();
+	CONTROLLER_Init();
+	VIEW_Init();
 
 	// Set the converter voltage
 	PWM_SetBuckPWM(64);
-
-
-	LED_SetNumber(0, 543);
-	LED_SetText(1, "ABC");
 
 	while(1) {
 
 		ADC_Task();
 		LED_Task();
+		CONTROLLER_Task();
+		VIEW_Task();
 
 		for (i=0; i<1000;i++) {
 			;
 		}
-		LED_SetNumber(0, ADC_GetScaled(ADC_CHAN_V_OUT));
-		LED_SetNumber(1, ADC_GetScaled(ADC_CHAN_I_OUT));
+
 	}
 
 }

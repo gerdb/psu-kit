@@ -44,7 +44,6 @@ unsigned int adc_filt = 0;
 void ADC_Init(void) {
 
 	// Ext Vref
-	// ADC: int 1.3V ref
 	ADMUX = 0x00;
 
 	//ADC on

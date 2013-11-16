@@ -23,3 +23,18 @@
 #include <avr/io.h>
 #include "project.h"
 #include "controller.h"
+
+/*
+ * Initialize the controller
+ */
+void CONTROLLER_Init(void) {
+
+}
+
+/*
+ * Controller task
+ *
+ */
+void CONTROLLER_Task(void) {
+
+}

@@ -24,6 +24,7 @@
 #ifndef CONTROLLER_H_
 #define CONTROLLER_H_
 
-
+// Function prototypes
+void CONTROLLER_Init(void);
 
 #endif /* CONTROLLER_H_ */
