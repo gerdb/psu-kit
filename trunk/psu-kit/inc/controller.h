@@ -26,5 +26,6 @@
 
 // Function prototypes
 void CONTROLLER_Init(void);
+void CONTROLLER_Task(void);
 
 #endif /* CONTROLLER_H_ */

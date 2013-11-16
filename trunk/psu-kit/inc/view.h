@@ -26,5 +26,6 @@
 
 // Function prototypes
 void VIEW_Init(void);
+void VIEW_Task(void);
 
 #endif /* VIEW_H_ */
