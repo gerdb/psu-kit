@@ -1,9 +1,9 @@
 /*
  *  Project:      psu-kit
- *  File:         pwm.c
+ *  File:         project.h
  *  Author:       gerd bartelt - www.sebulli.com
  *
- *  Description:  main file
+ *  Description:  header file that defines global project settings
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,35 +20,13 @@
  *
  */
 
+#ifndef PROJECT_H_
+#define PROJECT_H_
 
-#include <avr/io.h>
-#include "project.h"
-#include "pwm.h"
-#include "led.h"
-
-
-/*
- * Main function
- */
-int main( void )
-{
-	volatile unsigned int i;
-
-	//Initialize the PWM module
-	PWM_Init();
-
-	// Set the converter voltage
-	PWM_SetBuckPWM(64);
-
-	LED_Init();
+// Select exact ONE of the following settings
+//#define DISPLAY_LED_CA // LED display with common anode
+#define DISPLAY_LED_CC // LED display with common cathode
 
 
-	while(1) {
-		LED_Task();
-		for (i=0; i<100;i++) {
-			;
-		}
 
-	}
-
-}
+#endif /* PROJECT_H_ */
