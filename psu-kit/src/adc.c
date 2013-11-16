@@ -1,9 +1,9 @@
 /*
  *  Project:      psu-kit
- *  File:         pwm.c
+ *  File:         adc.c
  *  Author:       gerd bartelt - www.sebulli.com
  *
- *  Description:  main file
+ *  Description:  Analog digital conversion of voltage and current
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,39 +23,61 @@
 
 #include <avr/io.h>
 #include "project.h"
-#include "pwm.h"
-#include "led.h"
+#include "adc.h"
+
+/*
+ * local functions
+ */
+
+/*
+ * local variables
+ */
 
 
 /*
- * Main function
+ * Initialize the ADC module
  */
-int main( void )
-{
-	volatile unsigned int i;
+void ADC_Init(void) {
 
-	//Initialize all modules
-	PWM_Init();
-	LED_Init();
-	ADC_Init();
+	// Ext Vref
+	// ADC: int 1.3V ref
+	ADMUX = 0x0E;
 
-	// Set the converter voltage
-	PWM_SetBuckPWM(64);
-
-
-	LED_SetNumber(0, 543);
-	LED_SetText(1, "ABC");
-
-	while(1) {
-		ADC_Start(0x0E);
-
-		LED_Task();
-
-		for (i=0; i<1000;i++) {
-			;
-		}
-		LED_SetNumber(0,ADC_GetResult());
-
-	}
-
+	//ADC on
+	// 1:64 prescaler = 125kHz
+	ADCSRA = 0x86;
 }
+
+
+
+/*
+ * Start an ADC conversion
+ *
+ * \param channel: The ADC channel
+ */
+void ADC_Start(unsigned char channel) {
+
+	// Select the channel
+	// Right justified result
+	ADMUX = 0x20 | channel;
+
+	// Start the conversion
+	ADCSRA |= (1<<ADSC);
+}
+
+/*
+ * Returns the ADC result. Wait until the ADC is ready
+ *
+ * \return : The ADC result
+ */
+unsigned int ADC_GetResult(void) {
+
+	// wait for conversion to complete
+	while(ADCSRA & (1<<ADSC));
+
+	// return the result
+	return ADCH;
+}
+
+
+

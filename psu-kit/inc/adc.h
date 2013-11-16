@@ -1,9 +1,9 @@
 /*
  *  Project:      psu-kit
- *  File:         pwm.c
+ *  File:         adc.h
  *  Author:       gerd bartelt - www.sebulli.com
  *
- *  Description:  main file
+ *  Description:  header file for adc.c
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,41 +21,14 @@
  */
 
 
-#include <avr/io.h>
-#include "project.h"
-#include "pwm.h"
-#include "led.h"
+#ifndef ADC_H_
+#define ADC_H_
 
 
-/*
- * Main function
- */
-int main( void )
-{
-	volatile unsigned int i;
-
-	//Initialize all modules
-	PWM_Init();
-	LED_Init();
-	ADC_Init();
-
-	// Set the converter voltage
-	PWM_SetBuckPWM(64);
+//Function prototypes
+void ADC_Init(void);
+void ADC_Start(unsigned char channel);
+unsigned int ADC_GetResult(void);
 
 
-	LED_SetNumber(0, 543);
-	LED_SetText(1, "ABC");
-
-	while(1) {
-		ADC_Start(0x0E);
-
-		LED_Task();
-
-		for (i=0; i<1000;i++) {
-			;
-		}
-		LED_SetNumber(0,ADC_GetResult());
-
-	}
-
-}
+#endif /* ADC_H_ */
