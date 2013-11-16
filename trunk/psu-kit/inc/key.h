@@ -34,5 +34,4 @@ void KEY_Task(void);
 unsigned char KEY_Pressed(unsigned char key);
 unsigned char KEY_Click(unsigned char key);
 
-
 #endif /* KEY_H_ */

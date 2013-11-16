@@ -27,6 +27,4 @@
 //#define DISPLAY_LED_CA // LED display with common anode
 #define DISPLAY_LED_CC // LED display with common cathode
 
-
-
 #endif /* PROJECT_H_ */
