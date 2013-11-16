@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifndef MODEL_H_
 #define MODEL_H_
 
@@ -29,9 +28,8 @@
  */
 
 typedef enum {
-	SP_DROP
-}
-t_SetupParam;
+    SP_DROP
+} t_SetupParam;
 
 /*
  * global variables

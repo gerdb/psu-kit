@@ -20,7 +20,6 @@
  *
  */
 
-
 #include <avr/io.h>
 #include "project.h"
 #include "pwm.h"
@@ -34,33 +33,32 @@
 /*
  * Main function
  */
-int main( void )
-{
-	volatile unsigned int i;
+int main(void) {
+    volatile unsigned int i;
 
-	//Initialize all modules
-	PWM_Init();
-	LED_Init();
-	ADC_Init();
-	KEY_Init();
-	CONTROLLER_Init();
-	VIEW_Init();
+    //Initialize all modules
+    PWM_Init();
+    LED_Init();
+    ADC_Init();
+    KEY_Init();
+    CONTROLLER_Init();
+    VIEW_Init();
 
-	// Set the converter voltage
-	PWM_SetBuckPWM(64);
+    // Set the converter voltage
+    PWM_SetBuckPWM(64);
 
-	while(1) {
+    while (1) {
 
-		ADC_Task();
-		LED_Task();
-		KEY_Task();
-		CONTROLLER_Task();
-		VIEW_Task();
+        ADC_Task();
+        LED_Task();
+        KEY_Task();
+        CONTROLLER_Task();
+        VIEW_Task();
 
-		for (i=0; i<1000;i++) {
-			;
-		}
+        for (i = 0; i < 1000; i++) {
+            ;
+        }
 
-	}
+    }
 
 }

@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifndef ADC_H_
 #define ADC_H_
 
@@ -30,7 +29,6 @@
 #define ADC_CHAN_V_OUT 2
 #define ADC_CHAN_I_OUT 3
 #define ADC_CHAN_V_IN  4
-
 
 // Function prototypes
 void ADC_Init(void);

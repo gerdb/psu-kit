@@ -20,7 +20,6 @@
  *
  */
 
-
 #include <avr/io.h>
 #include "project.h"
 #include "led.h"
@@ -32,73 +31,72 @@
 /*
  * local variables
  */
-unsigned char digit[6] = {' ',' ',' ',' ',' ',' '};
+unsigned char digit[6] = { ' ', ' ', ' ', ' ', ' ', ' ' };
 unsigned char led_mux = 0;
-unsigned char digit_blink[2] = {0,0};
+unsigned char digit_blink[2] = { 0, 0 };
 unsigned char blink = 0;
 unsigned char blink_cnt = 0;
 
 // LED font
 const unsigned char led_font[48] = {
-	SEG_A | SEG_B | SEG_C | SEG_D | SEG_E | SEG_F		 ,	// LED character: "0"
-			SEG_B | SEG_C								 ,	// LED character: "1"
-	SEG_A | SEG_B |      	SEG_D | SEG_E |      	SEG_G,	// LED character: "2"
-	SEG_A | SEG_B | SEG_C | SEG_D |            		SEG_G,	// LED character: "3"
-			SEG_B | SEG_C |            		SEG_F | SEG_G,	// LED character: "4"
-	SEG_A |      	SEG_C | SEG_D |      	SEG_F | SEG_G, 	// LED character: "5"
-	SEG_A |      	SEG_C | SEG_D | SEG_E | SEG_F | SEG_G,	// LED character: "6"
-	SEG_A | SEG_B | SEG_C								 ,	// LED character: "7"
-	SEG_A | SEG_B | SEG_C | SEG_D | SEG_E | SEG_F | SEG_G,	// LED character: "8"
-	SEG_A | SEG_B | SEG_C | SEG_D |      	SEG_F | SEG_G, 	// LED character: "9"
-	0													 ,	// LED character: ":"
-	0													 ,  // LED character: ";"
-	SEG_A |                        			SEG_F | SEG_G, 	// LED character: "<"
-							SEG_D |      			SEG_G,	// LED character: "="
-					SEG_C | SEG_D | 				SEG_G,	// LED character: ">"
-	SEG_A | SEG_B |            		SEG_E |      	SEG_G,	// LED character: "?"
-	0                                        			 ,	// LED character: "@"
-	SEG_A | SEG_B | SEG_C |      	SEG_E | SEG_F | SEG_G, 	// LED character: "A"
-					SEG_C | SEG_D | SEG_E | SEG_F | SEG_G,	// LED character: "b"
-							SEG_D | SEG_E |      	SEG_G,	// LED character: "c"
-			SEG_B | SEG_C | SEG_D | SEG_E |      	SEG_G,	// LED character: "d"
-	SEG_A |           		SEG_D | SEG_E | SEG_F | SEG_G,	// LED character: "E"
-	SEG_A |                  		SEG_E | SEG_F | SEG_G,  // LED character: "f"
-	SEG_A | SEG_B | SEG_C | SEG_D |			SEG_F | SEG_G, 	// LED character: "g"
-					SEG_C |      	SEG_E | SEG_F | SEG_G,	// LED character: "h"
-					SEG_C            					 ,	// LED character: "i"
-	SEG_A | SEG_B | SEG_C | SEG_D                  		 ,	// LED character: "J"
-							SEG_D |      	SEG_F | SEG_G,	// LED character: "k"
-							SEG_D | SEG_E | SEG_F      	 ,	// LED character: "L"
-	SEG_A | SEG_B | SEG_C |      	SEG_E | SEG_F      	 ,	// LED character: "M"
-					SEG_C |      	SEG_E |      	SEG_G,	// LED character: "n"
-					SEG_C | SEG_D | SEG_E |      	SEG_G,	// LED character: "o"
-	SEG_A | SEG_B |            		SEG_E | SEG_F | SEG_G,	// LED character: "P"
-	SEG_A | SEG_B | SEG_C |            		SEG_F | SEG_G,	// LED character: "q"
-									SEG_E |      	SEG_G,	// LED character: "r"
-	SEG_A |      	SEG_C | SEG_D |      	SEG_F | SEG_G,	// LED character: "S"
-							SEG_D | SEG_E | SEG_F | SEG_G,	// LED character: "t"
-					SEG_C | SEG_D | SEG_E            	 ,	// LED character: "u"
-							SEG_D | SEG_E            	 ,	// LED character: "v"
-			SEG_B | SEG_C | SEG_D | SEG_E | SEG_F | SEG_G,	// LED character: "W"
-			SEG_B | SEG_C |     	SEG_E | SEG_F | SEG_G,	// LED character: "X"
-			SEG_B | SEG_C | SEG_D |			SEG_F | SEG_G,	// LED character: "Y"
-	SEG_A | SEG_B |      	SEG_D | SEG_E |      	SEG_G,	// LED character: "Z"
-			SEG_B | 				SEG_E | 		SEG_G,	// LED character: "["
-	0													 ,	// LED character: "\"
-					SEG_C | 				SEG_F | SEG_G,  // LED character: "]"
-	SEG_A												 , 	// LED character: "^"
-							SEG_D              				// LED character: "_"
-};
-
+        SEG_A | SEG_B | SEG_C | SEG_D | SEG_E | SEG_F,	        // LED character: "0"
+                SEG_B | SEG_C,	                                // LED character: "1"
+        SEG_A | SEG_B |         SEG_D | SEG_E |         SEG_G,	// LED character: "2"
+        SEG_A | SEG_B | SEG_C | SEG_D |                 SEG_G,	// LED character: "3"
+                SEG_B | SEG_C |                 SEG_F | SEG_G,	// LED character: "4"
+        SEG_A |         SEG_C | SEG_D |         SEG_F | SEG_G, 	// LED character: "5"
+        SEG_A |         SEG_C | SEG_D | SEG_E | SEG_F | SEG_G,	// LED character: "6"
+        SEG_A | SEG_B | SEG_C,	                                // LED character: "7"
+        SEG_A | SEG_B | SEG_C | SEG_D | SEG_E | SEG_F | SEG_G,  // LED character: "8"
+        SEG_A | SEG_B | SEG_C | SEG_D |         SEG_F | SEG_G, 	// LED character: "9"
+        0,	                                                    // LED character: ":"
+        0,                                                      // LED character: ";"
+        SEG_A |                                 SEG_F | SEG_G, 	// LED character: "<"
+                                SEG_D |                 SEG_G,	// LED character: "="
+                        SEG_C | SEG_D |                 SEG_G,	// LED character: ">"
+        SEG_A | SEG_B |                 SEG_E |         SEG_G,	// LED character: "?"
+        0,	                                                    // LED character: "@"
+        SEG_A | SEG_B | SEG_C |         SEG_E | SEG_F | SEG_G, 	// LED character: "A"
+                        SEG_C | SEG_D | SEG_E | SEG_F | SEG_G,	// LED character: "b"
+                                SEG_D | SEG_E |         SEG_G,	// LED character: "c"
+                SEG_B | SEG_C | SEG_D | SEG_E |         SEG_G,	// LED character: "d"
+        SEG_A |                 SEG_D | SEG_E | SEG_F | SEG_G,	// LED character: "E"
+        SEG_A |                         SEG_E | SEG_F | SEG_G,  // LED character: "f"
+        SEG_A | SEG_B | SEG_C | SEG_D |         SEG_F | SEG_G, 	// LED character: "g"
+                        SEG_C |         SEG_E | SEG_F | SEG_G,	// LED character: "h"
+                        SEG_C,	                                // LED character: "i"
+        SEG_A | SEG_B | SEG_C | SEG_D,	                        // LED character: "J"
+                                SEG_D |         SEG_F | SEG_G,	// LED character: "k"
+                                SEG_D | SEG_E | SEG_F,	        // LED character: "L"
+        SEG_A | SEG_B | SEG_C |         SEG_E | SEG_F,	        // LED character: "M"
+                        SEG_C |         SEG_E |         SEG_G,	// LED character: "n"
+                        SEG_C | SEG_D | SEG_E |         SEG_G,	// LED character: "o"
+        SEG_A | SEG_B |                 SEG_E | SEG_F | SEG_G,	// LED character: "P"
+        SEG_A | SEG_B | SEG_C |                 SEG_F | SEG_G,	// LED character: "q"
+                                        SEG_E |         SEG_G,	// LED character: "r"
+        SEG_A |         SEG_C | SEG_D |         SEG_F | SEG_G,	// LED character: "S"
+                                SEG_D | SEG_E | SEG_F | SEG_G,	// LED character: "t"
+                        SEG_C | SEG_D | SEG_E,	                // LED character: "u"
+                                SEG_D | SEG_E,	                // LED character: "v"
+                SEG_B | SEG_C | SEG_D | SEG_E | SEG_F | SEG_G,	// LED character: "W"
+                SEG_B | SEG_C |         SEG_E | SEG_F | SEG_G,	// LED character: "X"
+                SEG_B | SEG_C | SEG_D |         SEG_F | SEG_G,	// LED character: "Y"
+        SEG_A | SEG_B |         SEG_D | SEG_E |         SEG_G,	// LED character: "Z"
+                SEG_B |                 SEG_E |         SEG_G,	// LED character: "["
+        0,	                                                    // LED character: "\"
+                        SEG_C |                 SEG_F | SEG_G,  // LED character: "]"
+        SEG_A, 	                                                // LED character: "^"
+                                SEG_D              				// LED character: "_"
+        };
 
 /*
  * Initialize the LED module
  */
 void LED_Init(void) {
 
-	// LED Ports as output
-	DDRD  = 0b11111111;
-	DDRB |= 0b11011001;
+    // LED Ports as output
+    DDRD = 0b11111111;
+    DDRB |= 0b11011001;
 }
 
 /*
@@ -106,13 +104,13 @@ void LED_Init(void) {
  */
 void LED_DigitsOff(void) {
 #ifdef DISPLAY_LED_CC
-	PORTD |= 0b11100000;
-	PORTB |= 0b00011001;
+    PORTD |= 0b11100000;
+    PORTB |= 0b00011001;
 #endif
 
 #ifdef DISPLAY_LED_CA
-	PORTD &= ~0b11100000;
-	PORTB &= ~0b00011001;
+    PORTD &= ~0b11100000;
+    PORTB &= ~0b00011001;
 #endif
 }
 
@@ -122,13 +120,13 @@ void LED_DigitsOff(void) {
 void LED_SegmentsOff(void) {
 
 #ifdef DISPLAY_LED_CC
-	PORTD &= ~0b00011111;
-	PORTB &= ~0b11000000;
+    PORTD &= ~0b00011111;
+    PORTB &= ~0b11000000;
 #endif
 
 #ifdef DISPLAY_LED_CA
-	PORTD |= 0b00011111;
-	PORTB |= 0b11000000;
+    PORTD |= 0b00011111;
+    PORTB |= 0b11000000;
 #endif
 
 }
@@ -137,50 +135,60 @@ void LED_SegmentsOff(void) {
  * Switch on segments
  */
 void LED_SegmentsOn(unsigned char c) {
-	unsigned char led_c = 0;
+    unsigned char led_c = 0;
 
-	if (c >= '0')
-		led_c = led_font[c-'0'];
-
+    if (c >= '0')
+        led_c = led_font[c - '0'];
 
 #ifdef DISPLAY_LED_CC
-	PORTD |= (led_c & 0b00011111);
-	PORTB |= (led_c & 0b11000000);
+    PORTD |= (led_c & 0b00011111);
+    PORTB |= (led_c & 0b11000000);
 #endif
 
 #ifdef DISPLAY_LED_CA
-	PORTD &= ~(led_c & 0b00011111);
-	PORTB &= ~(led_c & 0b11000000);
+    PORTD &= ~(led_c & 0b00011111);
+    PORTB &= ~(led_c & 0b11000000);
 #endif
 
 }
-
 
 /*
  * Switch off one digit
  */
 void LED_DigitOn(unsigned char digit) {
-	switch (digit) {
+    switch (digit) {
 
 #ifdef DISPLAY_LED_CC
-	case 0: PORTD &= ~_BV(PD5); break;
-	case 1: PORTD &= ~_BV(PD6); break;
-	case 2: PORTD &= ~_BV(PD7); break;
-	case 3: PORTB &= ~_BV(PD0); break;
-	case 4: PORTB &= ~_BV(PD3); break;
-	case 5: PORTB &= ~_BV(PD4); break;
+    case 0:
+        PORTD &= ~_BV(PD5);
+        break;
+    case 1:
+        PORTD &= ~_BV(PD6);
+        break;
+    case 2:
+        PORTD &= ~_BV(PD7);
+        break;
+    case 3:
+        PORTB &= ~_BV(PD0);
+        break;
+    case 4:
+        PORTB &= ~_BV(PD3);
+        break;
+    case 5:
+        PORTB &= ~_BV(PD4);
+        break;
 #endif
 
 #ifdef DISPLAY_LED_CA
-	case 0: PORTD |= _BV(PD5); break;
-	case 1: PORTD |= _BV(PD6); break;
-	case 2: PORTD |= _BV(PD7); break;
-	case 3: PORTB |= _BV(PD0); break;
-	case 4: PORTB |= _BV(PD3); break;
-	case 5: PORTB |= _BV(PD4); break;
+        case 0: PORTD |= _BV(PD5); break;
+        case 1: PORTD |= _BV(PD6); break;
+        case 2: PORTD |= _BV(PD7); break;
+        case 3: PORTB |= _BV(PD0); break;
+        case 4: PORTB |= _BV(PD3); break;
+        case 5: PORTB |= _BV(PD4); break;
 #endif
 
-	}
+    }
 
 }
 
@@ -191,7 +199,7 @@ void LED_DigitOn(unsigned char digit) {
  *
  */
 void LED_SetBlinking(unsigned char display, unsigned char blink) {
-	digit_blink[display] = blink;
+    digit_blink[display] = blink;
 }
 
 /*
@@ -201,23 +209,23 @@ void LED_SetBlinking(unsigned char display, unsigned char blink) {
  * \param number: an integer from 0 to 999
  *
  */
-void LED_SetNumber(unsigned char display, unsigned int number, unsigned int fillzero) {
-	unsigned char idigit;
-	int i;
-	// Select the digit
-	idigit = display * 3;
+void LED_SetNumber(unsigned char display, unsigned int number,
+        unsigned int fillzero) {
+    unsigned char idigit;
+    int i;
+    // Select the digit
+    idigit = display * 3;
 
-	// Set all 3 digits
-	for (i = 0; i<3; i++) {
-		if (fillzero && (number == 0) && (i>0)) {
-			digit[idigit+2-i] = ' ';
-		} else {
-			digit[idigit+2-i] = '0' + (number % 10);
-		}
-		number /= 10;
-	}
+    // Set all 3 digits
+    for (i = 0; i < 3; i++) {
+        if (fillzero && (number == 0) && (i > 0)) {
+            digit[idigit + 2 - i] = ' ';
+        } else {
+            digit[idigit + 2 - i] = '0' + (number % 10);
+        }
+        number /= 10;
+    }
 }
-
 
 /*
  * Diplay a text on the display
@@ -227,15 +235,15 @@ void LED_SetNumber(unsigned char display, unsigned int number, unsigned int fill
  *
  */
 void LED_SetText(unsigned char display, char* text) {
-	unsigned char idigit;
-	int i;
-	// Select the digit
-	idigit = display * 3;
+    unsigned char idigit;
+    int i;
+    // Select the digit
+    idigit = display * 3;
 
-	// Set all 3 digits
-	for (i = 0; i<3; i++) {
-		digit[idigit+i] = text[i];
-	}
+    // Set all 3 digits
+    for (i = 0; i < 3; i++) {
+        digit[idigit + i] = text[i];
+    }
 }
 
 /*
@@ -243,34 +251,34 @@ void LED_SetText(unsigned char display, char* text) {
  *
  */
 void LED_Task(void) {
-	unsigned char displayNr;
+    unsigned char displayNr;
 
-	// 1st or 2nd display ?
-	if (led_mux >= 3 )
-		displayNr = 1;
-	else
-		displayNr = 0;
+    // 1st or 2nd display ?
+    if (led_mux >= 3)
+        displayNr = 1;
+    else
+        displayNr = 0;
 
-	LED_DigitsOff();
-	LED_SegmentsOff();
+    LED_DigitsOff();
+    LED_SegmentsOff();
 
-	if (!(digit_blink[displayNr] && blink)) {
-		LED_SegmentsOn(digit[led_mux]);
-		LED_DigitOn(led_mux);
-	}
+    if (!(digit_blink[displayNr] && blink)) {
+        LED_SegmentsOn(digit[led_mux]);
+        LED_DigitOn(led_mux);
+    }
 
-	// Next digit
-	led_mux ++;
-	if (led_mux >=6) {
-		led_mux = 0;
+    // Next digit
+    led_mux++;
+    if (led_mux >= 6) {
+        led_mux = 0;
 
-		// Generate the blinking effect
-		blink_cnt ++;
-		if (blink_cnt > 10) {
-			blink_cnt = 0;
-			blink = !blink;
-		}
-	}
+        // Generate the blinking effect
+        blink_cnt++;
+        if (blink_cnt > 10) {
+            blink_cnt = 0;
+            blink = !blink;
+        }
+    }
 
 }
 

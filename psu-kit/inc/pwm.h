@@ -20,12 +20,11 @@
  *
  */
 
-
 #ifndef PWM_H_
 #define PWM_H_
 
 //Function prototypes
 void PWM_Init(void);
-void PWM_SetBuckPWM (unsigned char val);
+void PWM_SetBuckPWM(unsigned char val);
 
 #endif /* PWM_H_ */
