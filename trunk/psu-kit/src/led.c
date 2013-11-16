@@ -34,6 +34,9 @@
  */
 unsigned char digit[6] = {'0','1','2','3','4','5'};
 unsigned char led_mux = 0;
+unsigned char digit_blink[2] = {0,0};
+unsigned char blink = 0;
+unsigned char blink_cnt = 0;
 
 // LED font
 const unsigned char led_font[48] = {
@@ -180,18 +183,48 @@ void LED_DigitOn(unsigned char digit) {
 }
 
 /*
+ * Set blinking on or off
+ * \param display: Display number 0 or 1
+ * \param blink: 1 for blinking mode on
+ *
+ */
+void LED_SetBlinking(unsigned char display, unsigned char blink) {
+	digit_blink[display] = blink;
+}
+
+/*
  * LED Task
  *
  */
 void LED_Task(void) {
+	unsigned char displayNr;
+
+	// 1st or 2nd display ?
+	if (led_mux >= 3 )
+		displayNr = 1;
+	else
+		displayNr = 0;
+
 	LED_DigitsOff();
 	LED_SegmentsOff();
-	LED_SegmentsOn(digit[led_mux]);
-	LED_DigitOn(led_mux);
+
+	if (!(digit_blink[displayNr] && blink)) {
+		LED_SegmentsOn(digit[led_mux]);
+		LED_DigitOn(led_mux);
+	}
 
 	// Next digit
 	led_mux ++;
-	if (led_mux >=6)
+	if (led_mux >=6) {
 		led_mux = 0;
+
+		// Generate the blinking effect
+		blink_cnt ++;
+		if (blink_cnt > 10) {
+			blink_cnt = 0;
+			blink = !blink;
+		}
+	}
+
 }
 
