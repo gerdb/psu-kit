@@ -214,6 +214,25 @@ void LED_SetNumber(unsigned char display, unsigned int number) {
 
 
 /*
+ * Diplay a text on the display
+ *
+ * \param display: Display number 0 or 1
+ * \param text: a 3 character string
+ *
+ */
+void LED_SetText(unsigned char display, char* text) {
+	unsigned char idigit;
+	int i;
+	// Select the digit
+	idigit = display * 3;
+
+	// Set all 3 digits
+	for (i = 0; i<3; i++) {
+		digit[idigit+i] = text[i];
+	}
+}
+
+/*
  * LED Task
  *
  */
