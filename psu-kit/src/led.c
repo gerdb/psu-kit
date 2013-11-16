@@ -137,9 +137,11 @@ void LED_SegmentsOff(void) {
  * Switch on segments
  */
 void LED_SegmentsOn(unsigned char c) {
-	unsigned char led_c;
+	unsigned char led_c = 0;
 
-	led_c = led_font[c-'0'];
+	if (c >= '0')
+		led_c = led_font[c-'0'];
+
 
 #ifdef DISPLAY_LED_CC
 	PORTD |= (led_c & 0b00011111);
@@ -199,7 +201,7 @@ void LED_SetBlinking(unsigned char display, unsigned char blink) {
  * \param number: an integer from 0 to 999
  *
  */
-void LED_SetNumber(unsigned char display, unsigned int number) {
+void LED_SetNumber(unsigned char display, unsigned int number, unsigned int fillzero) {
 	unsigned char idigit;
 	int i;
 	// Select the digit
@@ -207,7 +209,11 @@ void LED_SetNumber(unsigned char display, unsigned int number) {
 
 	// Set all 3 digits
 	for (i = 0; i<3; i++) {
-		digit[idigit+2-i] = '0' + (number % 10);
+		if (fillzero && (number == 0) && (i>0)) {
+			digit[idigit+2-i] = ' ';
+		} else {
+			digit[idigit+2-i] = '0' + (number % 10);
+		}
 		number /= 10;
 	}
 }
