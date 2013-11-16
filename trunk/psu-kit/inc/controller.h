@@ -1,9 +1,9 @@
 /*
  *  Project:      psu-kit
- *  File:         pwm.c
+ *  File:         controller.h
  *  Author:       gerd bartelt - www.sebulli.com
  *
- *  Description:  main file
+ *  Description:  header file for controller.c
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,44 +21,9 @@
  */
 
 
-#include <avr/io.h>
-#include "project.h"
-#include "pwm.h"
-#include "led.h"
-#include "adc.h"
-#include "controller.h"
-#include "model.h"
-#include "view.h"
-
-/*
- * Main function
- */
-int main( void )
-{
-	volatile unsigned int i;
-
-	//Initialize all modules
-	PWM_Init();
-	LED_Init();
-	ADC_Init();
-
-	// Set the converter voltage
-	PWM_SetBuckPWM(64);
+#ifndef CONTROLLER_H_
+#define CONTROLLER_H_
 
 
-	LED_SetNumber(0, 543);
-	LED_SetText(1, "ABC");
 
-	while(1) {
-
-		ADC_Task();
-		LED_Task();
-
-		for (i=0; i<1000;i++) {
-			;
-		}
-		LED_SetNumber(0, ADC_GetScaled(ADC_CHAN_V_OUT));
-		LED_SetNumber(1, ADC_GetScaled(ADC_CHAN_I_OUT));
-	}
-
-}
+#endif /* CONTROLLER_H_ */
