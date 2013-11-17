@@ -44,6 +44,7 @@ int main(void) {
 
 	//Initialize all modules
 	PWM_Init();
+	BUCK_Init();
 	LED_Init();
 	ADC_Init();
 	KEY_Init();
@@ -51,13 +52,11 @@ int main(void) {
 	VIEW_Init();
 	MAIN_Init();
 
-	// Set the converter voltage
-	PWM_SetBuckPWM(64);
-
 	while (1) {
 
 		// All tasks
 		ADC_Task();
+		BUCK_Task();
 		LED_Task(); // 6 digits in a 2ms task: 81Hz
 		KEY_Task();
 		CONTROLLER_Task();

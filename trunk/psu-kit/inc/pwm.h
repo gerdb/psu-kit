@@ -23,6 +23,8 @@
 #ifndef PWM_H_
 #define PWM_H_
 
+#define BUCK_PWM_MAX 128
+
 //Function prototypes
 void PWM_Init(void);
 void PWM_SetBuckPWM(unsigned char val);

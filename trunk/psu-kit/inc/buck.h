@@ -1,9 +1,9 @@
 /*
  *  Project:      psu-kit
- *  File:         view.h
+ *  File:         buck.h
  *  Author:       gerd bartelt - www.sebulli.com
  *
- *  Description:  header file for view.c
+ *  Description:  header file for buck.c
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,11 +20,12 @@
  *
  */
 
-#ifndef VIEW_H_
-#define VIEW_H_
+
+#ifndef BUCK_H_
+#define BUCK_H_
 
 // Function prototypes
-void VIEW_Init(void);
-void VIEW_Task(void);
+void BUCK_Init(void);
+void BUCK_Task(void);
 
-#endif /* VIEW_H_ */
+#endif /* BUCK_H_ */
