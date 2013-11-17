@@ -30,11 +30,17 @@
 #include "view.h"
 #include "key.h"
 
+void MAIN_Init(void) {
+	// Timer setup
+	// Set timer prescaler to 1:64
+	// and so the timer frequency to 8MHz/64/256 = 2.048ms
+	TCCR0 = 0b00000011;
+}
+
 /*
  * Main function
  */
 int main(void) {
-	volatile unsigned int i;
 
 	//Initialize all modules
 	PWM_Init();
@@ -43,22 +49,24 @@ int main(void) {
 	KEY_Init();
 	CONTROLLER_Init();
 	VIEW_Init();
+	MAIN_Init();
 
 	// Set the converter voltage
 	PWM_SetBuckPWM(64);
 
 	while (1) {
 
+		// All tasks
 		ADC_Task();
-		LED_Task();
+		LED_Task(); // 6 digits in a 2ms task: 81Hz
 		KEY_Task();
 		CONTROLLER_Task();
 		VIEW_Task();
 
-		for (i = 0; i < 1000; i++) {
-			;
-		}
-
+		// 2.048ms Task
+		while ((TIFR & _BV(TOV0)) == 0);
+		// Clear the flag
+		TIFR |= _BV(TOV0);
 	}
 
 }
