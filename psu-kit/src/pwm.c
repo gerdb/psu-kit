@@ -29,17 +29,18 @@
  */
 void PWM_Init(void) {
 
-	// OC1A as output
-	DDRB = _BV(PB1);
+	// OC1A and OC1B as output
+	DDRB |= _BV(PB1);
+	DDRB |= _BV(PB2);
 
 	// Set at BOTTOM, Clear at match
-	TCCR1A = _BV(COM1A1) | _BV(WGM11);
+	TCCR1A = _BV(COM1A1) | _BV(COM1B1) | _BV(WGM11);
 
 	// Fast PWM, Top of ICR1, prescaler: 1:1
 	TCCR1B = _BV(WGM13) | _BV(WGM12) | _BV(CS10);
 
-	// Set period time to 31.25kHz
-	ICR1 = 0x0080;
+	// Set period time to 62,5kHz
+	ICR1 = BUCK_PWM_MAX;
 
 	// Set PWM of charge pump to 50%
 	OCR1A = 0x0040;
