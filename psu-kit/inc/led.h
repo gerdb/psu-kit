@@ -38,7 +38,7 @@ void LED_Init(void);
 void LED_Task(void);
 void LED_SetBlinking(unsigned char display, unsigned char blink);
 void LED_SetNumber(unsigned char display, unsigned int number,
-        unsigned int fillzero);
+		unsigned int fillzero);
 void LED_SetText(unsigned char display, char* text);
 
 #endif /* LED_H_ */
