@@ -74,7 +74,7 @@ void CONTROLLER_Task(void) {
 			// Voltage drop
 			case SP_DROP:
 				voltage_drop +=1;
-				if (voltage_drop > 10) {
+				if (voltage_drop > VOLTDROP_AUTO) {
 					voltage_drop = 0;
 				}
 				break;

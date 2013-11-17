@@ -56,7 +56,12 @@ void VIEW_Task(void) {
 		// Voltage drop
 		case SP_DROP:
 			LED_SetText(0, "DRP");
-			LED_SetNumber(1, voltage_drop, 1);
+			if (voltage_drop == VOLTDROP_OFF)
+				LED_SetText(1, "OFF");
+			else if (voltage_drop == VOLTDROP_AUTO)
+				LED_SetText(1, "AUT");
+			else
+				LED_SetNumber(1, voltage_drop, 1);
 			break;
 
 		// Thermal resistance
