@@ -34,8 +34,8 @@
 unsigned char digit[6] = { ' ', ' ', ' ', ' ', ' ', ' ' };
 unsigned char led_mux = 0;
 unsigned char digit_blink[2] = { 0, 0 };
-unsigned char blink = 0;
-unsigned char blink_cnt = 0;
+static unsigned char blink = 0;
+static unsigned char blink_cnt = 0;
 
 // LED font
 const unsigned char led_font[48] = {
@@ -274,7 +274,7 @@ void LED_Task(void) {
 
 		// Generate the blinking effect
 		blink_cnt++;
-		if (blink_cnt > 10) {
+		if (blink_cnt > 100) {
 			blink_cnt = 0;
 			blink = !blink;
 		}

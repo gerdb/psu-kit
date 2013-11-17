@@ -28,6 +28,12 @@
 #include "model.h"
 
 /*
+ * local variables
+ */
+static unsigned char blink = 0;
+static unsigned int blink_cnt = 0;
+
+/*
  * Initialize the view
  */
 void VIEW_Init(void) {
@@ -65,6 +71,12 @@ void VIEW_Task(void) {
 			LED_SetNumber(1, tth, 1);
 			break;
 
+		// Applicate the thermo model
+		case SP_APPL_THERMO:
+			LED_SetText(0, "APL");
+			LED_SetNumber(1, appl_thermo, 1);
+			break;
+
 		// Thermal time constant
 		default:
 			LED_SetText(0, "---");
@@ -75,8 +87,23 @@ void VIEW_Task(void) {
 
 	} else {
 
-		// Display the output voltage and current
-		LED_SetNumber(0, ADC_GetScaled(ADC_CHAN_V_OUT), 0);
+		if (appl_thermo && blink ) {
+			// Display the thermo model temperature
+			LED_SetNumber(0, thermo_model, 1);
+
+		} else {
+			// Display the output voltage
+			LED_SetNumber(0, ADC_GetScaled(ADC_CHAN_V_OUT), 0);
+		}
+
+		// Display the output current
 		LED_SetNumber(1, ADC_GetScaled(ADC_CHAN_I_OUT), 0);
+	}
+
+	// Generate the blinking effect
+	blink_cnt++;
+	if (blink_cnt > 400) {
+		blink_cnt = 0;
+		blink = !blink;
 	}
 }

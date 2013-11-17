@@ -28,6 +28,7 @@
 #define SW2 1
 #define DEBOUNCE 20
 
+
 // Function prototypes
 void KEY_Init(void);
 void KEY_Task(void);

@@ -26,6 +26,8 @@
 #include "model.h"
 
 unsigned char setup_active = 0;
+unsigned char appl_thermo = 0;
+unsigned char thermo_model = 25;
 unsigned char startup = 1;
 unsigned int startup_cnt = 0;
 t_SetupParam setup_param = SP_DROP;

@@ -95,6 +95,14 @@ void CONTROLLER_Task(void) {
 				}
 				break;
 
+			// Applicate the thermo model
+			case SP_APPL_THERMO:
+				appl_thermo ++;
+				if (appl_thermo > 1) {
+					appl_thermo = 0;
+				}
+				break;
+
 			// Thermal time constant
 			default:
 
