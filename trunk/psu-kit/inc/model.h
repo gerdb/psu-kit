@@ -28,7 +28,7 @@
  */
 
 typedef enum {
-    SP_DROP
+	SP_DROP
 } t_SetupParam;
 
 /*

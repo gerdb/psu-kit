@@ -40,19 +40,19 @@ void VIEW_Init(void) {
  */
 void VIEW_Task(void) {
 
-    if (setup_active) {
-        // Setup menu
-        switch (setup_param) {
-        case SP_DROP:
-            LED_SetText(0, "DRP");
-            LED_SetNumber(1, voltage_drop, 1);
-            break;
-        }
+	if (setup_active) {
+		// Setup menu
+		switch (setup_param) {
+		case SP_DROP:
+			LED_SetText(0, "DRP");
+			LED_SetNumber(1, voltage_drop, 1);
+			break;
+		}
 
-    } else {
+	} else {
 
-        // Display the output voltage and current
-        LED_SetNumber(0, ADC_GetScaled(ADC_CHAN_V_OUT), 0);
-        LED_SetNumber(1, ADC_GetScaled(ADC_CHAN_I_OUT), 0);
-    }
+		// Display the output voltage and current
+		LED_SetNumber(0, ADC_GetScaled(ADC_CHAN_V_OUT), 0);
+		LED_SetNumber(1, ADC_GetScaled(ADC_CHAN_I_OUT), 0);
+	}
 }
