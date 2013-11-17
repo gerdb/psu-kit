@@ -35,6 +35,9 @@ typedef enum {
 	SP_LAST
 } t_SetupParam;
 
+#define VOLTDROP_OFF 11
+#define VOLTDROP_AUTO 12
+
 /*
  * global variables
  */
