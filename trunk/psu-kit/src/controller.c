@@ -23,6 +23,8 @@
 #include <avr/io.h>
 #include "project.h"
 #include "controller.h"
+#include "model.h"
+#include "key.h"
 
 /*
  * Initialize the controller
@@ -36,5 +38,72 @@ void CONTROLLER_Init(void) {
  *
  */
 void CONTROLLER_Task(void) {
+
+	// Startup
+	if (startup) {
+		startup_cnt++;
+		if (startup_cnt > 1000) {
+			if (KEY_Pressed(SW1)) {
+				setup_active = 1;
+				KEY_Reset();
+			}
+			startup = 0;
+		}
+
+	}
+
+	// Setup Mode
+	if (setup_active) {
+
+		// Next Setup Menu
+		if (KEY_Click(SW1)) {
+			setup_param ++;
+
+			// Exit setup mode
+			if (setup_param == SP_LAST) {
+				setup_active = 0;
+			}
+
+		}
+
+		// Increment the parameter
+		if (KEY_Click(SW2)) {
+
+			switch (setup_param) {
+
+			// Voltage drop
+			case SP_DROP:
+				voltage_drop +=1;
+				if (voltage_drop > 10) {
+					voltage_drop = 0;
+				}
+				break;
+
+			// Thermal resistance
+			case SP_RTH:
+				rth +=1;
+				if (rth > 50) {
+					rth = 1;
+				}
+				break;
+
+			// Thermal time constant
+			case SP_TTH:
+				tth +=2;
+				if (tth > 60) {
+					tth = 2;
+				}
+				break;
+
+			// Thermal time constant
+			default:
+
+				break;
+			}
+
+
+		}
+
+	}
 
 }
