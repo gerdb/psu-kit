@@ -31,6 +31,7 @@ typedef enum {
 	SP_DROP,
 	SP_RTH,
 	SP_TTH,
+	SP_APPL_THERMO,
 	SP_LAST
 } t_SetupParam;
 
@@ -38,6 +39,8 @@ typedef enum {
  * global variables
  */
 extern unsigned char setup_active;
+extern unsigned char appl_thermo;
+extern unsigned char thermo_model;
 extern unsigned char startup;
 extern unsigned int startup_cnt;
 extern t_SetupParam setup_param;
