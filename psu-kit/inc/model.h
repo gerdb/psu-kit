@@ -28,13 +28,20 @@
  */
 
 typedef enum {
-	SP_DROP
+	SP_DROP,
+	SP_RTH,
+	SP_TTH,
+	SP_LAST
 } t_SetupParam;
 
 /*
  * global variables
  */
 extern unsigned char setup_active;
+extern unsigned char startup;
+extern unsigned int startup_cnt;
 extern t_SetupParam setup_param;
 extern unsigned char voltage_drop;
+extern unsigned char rth;
+extern unsigned char tth;
 #endif /* MODEL_H_ */

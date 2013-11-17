@@ -59,8 +59,8 @@ void KEY_Task(void) {
 		if (i == SW2)
 			key = PINB & _BV(PINB5);
 
-		// Is input HIGH ?
-		if (key != 0) {
+		// Is input LOW = active ?
+		if (key == 0) {
 
 			// Count up the debounce counter
 			if (debounce_cnt[i] < DEBOUNCE) {
@@ -111,3 +111,15 @@ unsigned char KEY_Click(unsigned char key) {
 	return ret;
 
 }
+
+/*
+ * Reset all key events
+ *
+ */
+void KEY_Reset(void) {
+
+	// Reset the events
+	key_click[SW1] = 0;
+	key_click[SW2] = 0;
+}
+

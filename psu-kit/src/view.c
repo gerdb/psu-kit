@@ -40,14 +40,38 @@ void VIEW_Init(void) {
  */
 void VIEW_Task(void) {
 
-	if (setup_active) {
+	if (startup) {
+		LED_SetText(0, "PSU");
+		LED_SetText(1, "001");
+	} else if (setup_active) {
 		// Setup menu
 		switch (setup_param) {
+
+		// Voltage drop
 		case SP_DROP:
 			LED_SetText(0, "DRP");
 			LED_SetNumber(1, voltage_drop, 1);
 			break;
+
+		// Thermal resistance
+		case SP_RTH:
+			LED_SetText(0, "RTH");
+			LED_SetNumber(1, rth, 1);
+			break;
+
+		// Thermal time constant
+		case SP_TTH:
+			LED_SetText(0, "TTH");
+			LED_SetNumber(1, tth, 1);
+			break;
+
+		// Thermal time constant
+		default:
+			LED_SetText(0, "---");
+			LED_SetText(1, "---");
+			break;
 		}
+
 
 	} else {
 

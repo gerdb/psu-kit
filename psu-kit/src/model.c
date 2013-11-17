@@ -25,6 +25,10 @@
 #include "controller.h"
 #include "model.h"
 
-unsigned char setup_active = 1;
+unsigned char setup_active = 0;
+unsigned char startup = 1;
+unsigned int startup_cnt = 0;
 t_SetupParam setup_param = SP_DROP;
 unsigned char voltage_drop = 5;
+unsigned char rth = 3;
+unsigned char tth = 8;

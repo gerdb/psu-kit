@@ -33,5 +33,6 @@ void KEY_Init(void);
 void KEY_Task(void);
 unsigned char KEY_Pressed(unsigned char key);
 unsigned char KEY_Click(unsigned char key);
+void KEY_Reset(void);
 
 #endif /* KEY_H_ */
