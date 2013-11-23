@@ -98,11 +98,18 @@ void VIEW_Task(void) {
 
 		} else {
 			// Display the output voltage
-			LED_SetNumber(0, ADC_GetScaled(ADC_CHAN_V_SET), 0);
+			if (show_setpoints)
+				LED_SetNumber(0, ADC_GetScaled(ADC_CHAN_V_SET), 0);
+			else
+				LED_SetNumber(0, ADC_GetScaled(ADC_CHAN_V_OUT), 0);
+
 		}
 
 		// Display the output current
-		LED_SetNumber(1, ADC_GetScaled(ADC_CHAN_I_SET), 0);
+		if (show_setpoints)
+			LED_SetNumber(1, ADC_GetScaled(ADC_CHAN_I_SET), 0);
+		else
+			LED_SetNumber(1, ADC_GetScaled(ADC_CHAN_I_OUT), 0);
 	}
 
 	// Generate the blinking effect

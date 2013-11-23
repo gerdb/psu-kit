@@ -112,6 +112,8 @@ void CONTROLLER_Task(void) {
 
 		}
 
+	} else { // not setup_active
+		show_setpoints = KEY_Pressed (SW2);
 	}
 
 }

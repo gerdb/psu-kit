@@ -42,6 +42,7 @@ typedef enum {
  * global variables
  */
 extern unsigned char setup_active;
+extern unsigned char show_setpoints;
 extern unsigned char appl_thermo;
 extern unsigned char thermo_model;
 extern unsigned char startup;
