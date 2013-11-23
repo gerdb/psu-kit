@@ -133,35 +133,47 @@ unsigned int ADC_GetScaled(unsigned char channel) {
 void ADC_Scale(unsigned char channel) {
 
 	unsigned int raw = adc_raw[channel] / 16;
+	unsigned int corr;
 
 	switch (channel) {
 
 	// Voltage divider: 6:1
 	// 1024 = 5.0V = 30.0V
 	// 1024 / 2 * 75 / 128 = 300
-	// Extra divider R6/R7: 200k/210k = 0,952380952
-	// resulting scale factor: 300*0.95.. = 285,714285714
+	// Extra divider R6/R7: 200k/201,5k = 0,992555831
+	// resulting scale factor: 300*0.992.. = 297,76674938
 	case ADC_CHAN_V_SET:
-		adc_scaled[channel] = raw * 35 / 128 + raw * 23 / 4096;
+		adc_scaled[channel] = (raw / 2) * 75 / 128 - raw * 9 / 4;
 		break;
 
-		// Shunt 0.1R, gain: 21 = 2,1R
-		// 1024 = 5.0V = 2.38095A
-		// 1024 * 30 / 128 - 1024 / 512 = 238 ( instead of 238,985 )
+    // Voltage divider: 6:1
+    // 1024 = 5.0V = 30.0V
+    // 1024 / 2 * 75 / 128 = 300
+
+	// Current correction factor:
+	// 1024 = 5V => 10V = 4,761904762A = 0,4761904762V = 4,761904762 Units
+	// 1024 * 19 / 4096 = 4.75
 	case ADC_CHAN_V_OUT:
+		corr = adc_raw[ADC_CHAN_I_OUT] * 19 / 4096;
 		adc_scaled[channel] = (raw / 2) * 75 / 128;
+		if (adc_scaled[channel] > corr)
+			adc_scaled[channel] -= corr;
+		else
+			adc_scaled[channel] = 0;
 		break;
 
-		// Shunt 0.1R, gain: 21 = 2,1R
-		// 1024 = 5.0V = 2.38095A
-		// 1024 * 30 / 128 - 1024 / 512 = 238 ( instead of 238,985 )	case ADC_CHAN_I_SET:
+	// Shunt 0.1R, gain: 21 = 2,1R
+	// Voltage divider 1:2
+	// 1024 = 5V => 10V = 4,761904762A
+	// 1024 * 60 / 128 - 1024 / 256 = 476 ( instead of 476,1904762 )
+	case ADC_CHAN_I_SET:
 	case ADC_CHAN_I_OUT:
-		adc_scaled[channel] = raw * 30 / 128 - raw / 512;
+		adc_scaled[channel] = raw * 60 / 128 - raw / 256;
 		break;
 
-		// Voltage divider: 8.5:1
-		// 1024 = 5.0V = 42.5V
-		// 1024 * 53 / 128 = 424 (instead of 425)
+	// Voltage divider: 8.5:1
+	// 1024 = 5.0V = 42.5V
+	// 1024 * 53 / 128 = 424 (instead of 425)
 	case ADC_CHAN_V_IN:
 		adc_scaled[channel] = raw * 53 / 128;
 		break;
