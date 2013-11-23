@@ -26,6 +26,7 @@
 #include "model.h"
 
 unsigned char setup_active = 0;
+unsigned char show_setpoints = 0;
 unsigned char appl_thermo = 0;
 unsigned char thermo_model = 25;
 unsigned char startup = 1;
@@ -34,3 +35,4 @@ t_SetupParam setup_param = SP_DROP;
 unsigned char voltage_drop = 5;
 unsigned char rth = 3;
 unsigned char tth = 8;
+
