@@ -143,7 +143,7 @@ void ADC_Scale(unsigned char channel) {
 	// Extra divider R6/R7: 200k/201,5k = 0,992555831
 	// resulting scale factor: 300*0.992.. = 297,76674938
 	case ADC_CHAN_V_SET:
-		adc_scaled[channel] = (raw / 2) * 75 / 128 - raw * 9 / 4;
+		adc_scaled[channel] = (raw / 2) * 75 / 128 - raw * 9 / 4096;
 		break;
 
     // Voltage divider: 6:1
@@ -163,10 +163,16 @@ void ADC_Scale(unsigned char channel) {
 		break;
 
 	// Shunt 0.1R, gain: 21 = 2,1R
+    // 1024 = 5.0V = 2.38095A
+    // 1024 * 30 / 128 - 1024 / 512 = 238 ( instead of 238,985
+	case ADC_CHAN_I_SET:
+		adc_scaled[channel] = raw * 30 / 128 - raw / 512;
+		break;
+
+	// Shunt 0.1R, gain: 21 = 2,1R
 	// Voltage divider 1:2
 	// 1024 = 5V => 10V = 4,761904762A
 	// 1024 * 60 / 128 - 1024 / 256 = 476 ( instead of 476,1904762 )
-	case ADC_CHAN_I_SET:
 	case ADC_CHAN_I_OUT:
 		adc_scaled[channel] = raw * 60 / 128 - raw / 256;
 		break;
