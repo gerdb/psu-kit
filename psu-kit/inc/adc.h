@@ -28,7 +28,7 @@
 #define ADC_CHAN_I_SET 1
 #define ADC_CHAN_V_OUT 2
 #define ADC_CHAN_I_OUT 3
-#define ADC_CHAN_V_IN  4
+#define ADC_CHAN_V_BUCK 4
 
 // Function prototypes
 void ADC_Init(void);

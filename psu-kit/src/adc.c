@@ -36,7 +36,7 @@ unsigned int adc_scaled[5] = { 0, 0, 0, 0, 0 };
 unsigned char adc_mux = 0;
 unsigned char adc_filtcnt = 0;
 unsigned int adc_filt = 0;
-
+unsigned char meas_buck = 0;
 /*
  * Initialize the ADC module
  */
@@ -61,28 +61,46 @@ void ADC_Task(void) {
 	// Wait until the ADC result is available
 	if ((ADCSRA & (1 << ADSC)) == 0) {
 
-		// Get the ADC result and filter it
-		adc_filt += ADCW;
-		adc_filtcnt++;
 
-		// n values sampled ?
-		if (adc_filtcnt >= 16) {
-			adc_filtcnt = 0;
-			adc_raw[adc_mux] = adc_filt;
-			ADC_Scale(adc_mux);
+		// Do not filter the buck output voltage
+		if (meas_buck) {
+			adc_raw[ADC_CHAN_V_BUCK] = ADCW*16;
+			ADC_Scale(ADC_CHAN_V_BUCK);
+		}
+		// Measure and filter the other channels
+		else {
 
-			adc_filt = 0;
+			// Get the ADC result and filter it
+			adc_filt += ADCW;
+			adc_filtcnt++;
 
-			// Next channel
-			adc_mux++;
-			if (adc_mux >= 5) {
-				adc_mux = 0;
+			// n values sampled ?
+			if (adc_filtcnt >= 16) {
+				adc_filtcnt = 0;
+				adc_raw[adc_mux] = adc_filt;
+				ADC_Scale(adc_mux);
+
+				adc_filt = 0;
+
+				// Next channel
+				adc_mux++;
+				if (adc_mux >= 4) {
+					adc_mux = 0;
+				}
+
 			}
-
 		}
 
+		// measure the buck output voltage every 2nd task,
+		// because it must be very fast to achieve a fast and stable buck controller
+		meas_buck = !meas_buck;
+
 		// Start the next conversion
-		ADC_Start(adc_mux);
+		if (meas_buck)
+			ADC_Start(ADC_CHAN_V_BUCK);
+		else
+			ADC_Start(adc_mux);
+
 
 	}
 
@@ -180,7 +198,7 @@ void ADC_Scale(unsigned char channel) {
 	// Voltage divider: 8.5:1
 	// 1024 = 5.0V = 42.5V
 	// 1024 * 53 / 128 = 424 (instead of 425)
-	case ADC_CHAN_V_IN:
+	case ADC_CHAN_V_BUCK:
 		adc_scaled[channel] = raw * 53 / 128;
 		break;
 	}

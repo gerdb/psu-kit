@@ -29,6 +29,7 @@
 #include "model.h"
 #include "view.h"
 #include "key.h"
+#include "buck.h"
 
 void MAIN_Init(void) {
 	// Timer setup
