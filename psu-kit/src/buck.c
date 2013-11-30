@@ -61,7 +61,7 @@ void BUCK_Task(void) {
 	signed int regdiff;
 
 	// Calculate the setpoint
-	buck_sp = ADC_GetScaled(ADC_CHAN_V_SET) + volt_drop;
+	buck_sp = ADC_GetScaled(ADC_CHAN_V_OUT) + volt_drop;
 
 /*
 	// Test the controller
