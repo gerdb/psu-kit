@@ -172,7 +172,7 @@ void ADC_Scale(unsigned char channel) {
 	// 1024 = 5V => 10V = 4,761904762A = 0,4761904762V = 4,761904762 Units
 	// 1024 * 19 / 4096 = 4.75
 	case ADC_CHAN_V_OUT:
-		corr = adc_raw[ADC_CHAN_I_OUT] * 19 / 4096;
+		corr = (adc_raw[ADC_CHAN_I_OUT] / 16 ) * 19 / 4096;
 		adc_scaled[channel] = (raw / 2) * 75 / 128;
 		if (adc_scaled[channel] > corr)
 			adc_scaled[channel] -= corr;
