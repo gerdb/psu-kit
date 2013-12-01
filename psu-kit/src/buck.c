@@ -33,6 +33,7 @@
  */
 
 //Parameter buck controller
+#define BUCK_KD 0
 #define BUCK_KP 8
 #define BUCK_KI 2
 
@@ -42,6 +43,8 @@
 static unsigned int volt_drop;
 static signed int buck_pwm;
 static signed int buck_pwm_int = 0;
+static signed int old_v_buck = 0 ;
+static signed int v_buck = 0 ;
 /*
  * Initialize the buck controller
  */
@@ -63,6 +66,7 @@ void BUCK_Task(void) {
 	// Calculate the setpoint
 	buck_sp = ADC_GetScaled(ADC_CHAN_V_OUT) + volt_drop;
 
+	v_buck = ADC_GetScaled(ADC_CHAN_V_BUCK);
 /*
 	// Test the controller
 	if (show_setpoints)
@@ -71,23 +75,33 @@ void BUCK_Task(void) {
 		buck_sp = 80;
 */
 
+
 	// Calculate the difference
-	regdiff = buck_sp - ADC_GetScaled(ADC_CHAN_V_BUCK);
+	regdiff = buck_sp - v_buck;
 
 	// Integrate
 	buck_pwm_int += BUCK_KI * regdiff;
+	// Limit
+	if (buck_pwm_int > (3* BUCK_PWM_MAX * 16)) {
+		buck_pwm_int = (3* BUCK_PWM_MAX * 16);
+	}
+	if (buck_pwm_int < -(BUCK_PWM_MAX * 16)) {
+		buck_pwm_int = -(BUCK_PWM_MAX * 16);
+	}
 
 	// Calculate the PWM value
-	buck_pwm = BUCK_KP * regdiff / 16 + buck_pwm_int / 256;
+	buck_pwm =  - BUCK_KP * v_buck / 16
+				+ buck_pwm_int / 16
+				- BUCK_KD * ( v_buck - old_v_buck ) / 16;
 
 	// Limit the PWM to min and max and limit also the integrator
 	if (buck_pwm > BUCK_PWM_MAX) {
 		buck_pwm = BUCK_PWM_MAX;
-		buck_pwm_int = ( BUCK_PWM_MAX - (BUCK_KP * regdiff / 16) ) * 256;
+		buck_pwm_int = ( BUCK_PWM_MAX + (BUCK_KP * v_buck / 16) ) * 16;
 	}
 	if (buck_pwm < 0) {
 		buck_pwm = 0;
-		buck_pwm_int = ( 0 - (BUCK_KP * regdiff / 16) ) * 256;
+		buck_pwm_int = ( 0 + (BUCK_KP *  v_buck / 16) ) * 16;
 	}
 
 	// 100% if voltage drop feature is switched off
@@ -97,6 +111,9 @@ void BUCK_Task(void) {
 	// 100% if voltage drop "auto" is selected
 	if (voltage_drop == VOLTDROP_AUTO)
 		buck_pwm = BUCK_PWM_MAX;
+
+	// for the next task
+	old_v_buck = v_buck;
 
 	// Set the PWM
 	PWM_SetBuckPWM(buck_pwm);
