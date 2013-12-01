@@ -218,7 +218,7 @@ void LED_SetNumber(unsigned char display, unsigned int number,
 
 	// Set all 3 digits
 	for (i = 0; i < 3; i++) {
-		if (fillzero && (number == 0) && (i > 0)) {
+		if ((fillzero>0) && (number == 0) && (i >= fillzero)) {
 			digit[idigit + 2 - i] = ' ';
 		} else {
 			digit[idigit + 2 - i] = '0' + (number % 10);
