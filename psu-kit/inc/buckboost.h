@@ -24,6 +24,10 @@
 #ifndef BUCKBOOST_H_
 #define BUCKBOOST_H_
 
+// Defines
+#define BUCK_MODE 0
+#define BOOST_MODE 1
+
 // Function prototypes
 void BUCKB_Init(void);
 void BUCKB_Task(void);
