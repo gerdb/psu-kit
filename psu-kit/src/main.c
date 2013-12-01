@@ -29,7 +29,7 @@
 #include "model.h"
 #include "view.h"
 #include "key.h"
-#include "buck.h"
+#include "buckboost.h"
 
 void MAIN_Init(void) {
 	// Timer setup
@@ -45,7 +45,7 @@ int main(void) {
 
 	//Initialize all modules
 	PWM_Init();
-	BUCK_Init();
+	BUCKB_Init();
 	LED_Init();
 	ADC_Init();
 	KEY_Init();
@@ -57,7 +57,7 @@ int main(void) {
 
 		// All tasks
 		ADC_Task();
-		BUCK_Task();
+		BUCKB_Task();
 		LED_Task(); // 6 digits in a 2ms task: 81Hz
 		KEY_Task();
 		CONTROLLER_Task();

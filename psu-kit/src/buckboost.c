@@ -1,9 +1,9 @@
 /*
  *  Project:      psu-kit
- *  File:         buck.c
+ *  File:         buckboost.c
  *  Author:       gerd bartelt - www.sebulli.com
  *
- *  Description:  controls the buck converter
+ *  Description:  controls the buck and boost converter
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
 #include "pwm.h"
 #include "adc.h"
 #include "model.h"
-#include "buck.h"
+#include "buckboost.h"
 
 
 /*
@@ -41,14 +41,14 @@
  * local variables
  */
 static unsigned int volt_drop;
-static signed int buck_pwm;
+static signed int out_pwm;
 static signed int buck_pwm_int = 0;
 static signed int old_v_buck = 0 ;
 static signed int v_buck = 0 ;
 /*
  * Initialize the buck controller
  */
-void BUCK_Init(void) {
+void BUCKB_Init(void) {
 	PWM_SetBuckPWM(0);
 
 	// Scale it to 0.1V
@@ -59,7 +59,7 @@ void BUCK_Init(void) {
  * Buck task
  *
  */
-void BUCK_Task(void) {
+void BUCKB_Task(void) {
 	unsigned int buck_sp;
 	signed int regdiff;
 
@@ -90,32 +90,39 @@ void BUCK_Task(void) {
 	}
 
 	// Calculate the PWM value
-	buck_pwm =  - BUCK_KP * v_buck / 16
+	out_pwm =  - BUCK_KP * v_buck / 16
 				+ buck_pwm_int / 16
 				- BUCK_KD * ( v_buck - old_v_buck ) / 16;
 
 	// Limit the PWM to min and max and limit also the integrator
-	if (buck_pwm > BUCK_PWM_MAX) {
-		buck_pwm = BUCK_PWM_MAX;
-		buck_pwm_int = ( BUCK_PWM_MAX + (BUCK_KP * v_buck / 16) ) * 16;
+	if (out_pwm > (BUCK_PWM_MAX+BOOST_PWM_MAX)) {
+		out_pwm = (BUCK_PWM_MAX+BOOST_PWM_MAX);
+		buck_pwm_int = ( (BUCK_PWM_MAX+BOOST_PWM_MAX) + (BUCK_KP * v_buck / 16) ) * 16;
 	}
-	if (buck_pwm < 0) {
-		buck_pwm = 0;
+	if (out_pwm < 0) {
+		out_pwm = 0;
 		buck_pwm_int = ( 0 + (BUCK_KP *  v_buck / 16) ) * 16;
 	}
 
 	// 100% if voltage drop feature is switched off
 	if (voltage_drop == VOLTDROP_OFF)
-		buck_pwm = BUCK_PWM_MAX;
+		out_pwm = BUCK_PWM_MAX;
 
 	// 100% if voltage drop "auto" is selected
 	if (voltage_drop == VOLTDROP_AUTO)
-		buck_pwm = BUCK_PWM_MAX;
+		out_pwm = BUCK_PWM_MAX;
 
 	// for the next task
 	old_v_buck = v_buck;
 
 	// Set the PWM
-	PWM_SetBuckPWM(buck_pwm);
+	if (out_pwm<= BUCK_PWM_MAX) {
+		PWM_SetBuckPWM(out_pwm);
+		PWM_SetBoostPWM(0);
+	} else {
+		PWM_SetBuckPWM(BUCK_PWM_MAX);
+		PWM_SetBoostPWM(out_pwm-BUCK_PWM_MAX);
+	}
+
 
 }

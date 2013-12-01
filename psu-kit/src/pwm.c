@@ -32,9 +32,11 @@ void PWM_Init(void) {
 	// OC1A and OC1B as output
 	DDRB |= _BV(PB1);
 	DDRB |= _BV(PB2);
+	PORTB &= ~_BV(PB1);
+	PORTB &= ~_BV(PB2);
 
 	// Set at BOTTOM, Clear at match
-	TCCR1A = _BV(COM1A1) | _BV(COM1B1) | _BV(WGM11);
+	TCCR1A = _BV(COM1A1) | _BV(COM1A0) | _BV(COM1B1) | _BV(WGM11);
 
 	// Fast PWM, Top of ICR1, prescaler: 1:1
 	TCCR1B = _BV(WGM13) | _BV(WGM12) | _BV(CS10);
@@ -42,8 +44,9 @@ void PWM_Init(void) {
 	// Set period time to 62,5kHz
 	ICR1 = BUCK_PWM_MAX;
 
-	// Set PWM of charge pump to 50%
-	OCR1A = 0x0040;
+	// Set PWM of boost to 0%
+	OCR1A = 0x0080;
+
 	// Set PWM of buck to 0%
 	OCR1B = 0x0000;
 }
@@ -57,4 +60,15 @@ void PWM_SetBuckPWM(unsigned char val) {
 
 	OCR1B = val;
 }
+/*
+ * Set the PWM to the OCR1A output (boost-converter)
+ *
+ * \param val PWM value from 0 to 64(BOOST_PWM_MAX)=50%
+ */
+void PWM_SetBoostPWM(unsigned char val) {
 
+	if (val > BOOST_PWM_MAX) { // max +50%
+		val = BOOST_PWM_MAX;
+	}
+	OCR1A = 128-val;
+}
