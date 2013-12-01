@@ -37,6 +37,9 @@
 #define BUCK_KP 8
 #define BUCK_KI 2
 
+#define BOOST_KP 2
+#define BOOST_KI 1
+
 /*
  * local variables
  */
@@ -45,6 +48,7 @@ static signed int out_pwm;
 static signed int buck_pwm_int = 0;
 static signed int old_v_buck = 0 ;
 static signed int v_buck = 0 ;
+static unsigned char buckboost_mode = BUCK_MODE;
 /*
  * Initialize the buck controller
  */
@@ -66,42 +70,39 @@ void BUCKB_Task(void) {
 	// Calculate the setpoint
 	buck_sp = ADC_GetScaled(ADC_CHAN_V_OUT) + volt_drop;
 
-	v_buck = ADC_GetScaled(ADC_CHAN_V_BUCK);
-/*
-	// Test the controller
-	if (show_setpoints)
-		buck_sp  = 180;
-	else
-		buck_sp = 80;
-*/
+	// Limit setpoint to 36.0V
+	if (buck_sp > 360)
+		buck_sp = 360;
 
+	// Get the output voltage of the buck converter
+	v_buck = ADC_GetScaled(ADC_CHAN_V_BUCK);
 
 	// Calculate the difference
 	regdiff = buck_sp - v_buck;
 
 	// Integrate
-	buck_pwm_int += BUCK_KI * regdiff;
+	if (buckboost_mode == BUCK_MODE)
+		buck_pwm_int += BUCK_KI * regdiff;
+	else
+		buck_pwm_int += BOOST_KI * regdiff;
+
+
 	// Limit
-	if (buck_pwm_int > (3* BUCK_PWM_MAX * 16)) {
+	if (buck_pwm_int > (3* BUCK_PWM_MAX * 16))
 		buck_pwm_int = (3* BUCK_PWM_MAX * 16);
-	}
-	if (buck_pwm_int < -(BUCK_PWM_MAX * 16)) {
+
+	if (buck_pwm_int < -(BUCK_PWM_MAX * 16))
 		buck_pwm_int = -(BUCK_PWM_MAX * 16);
-	}
+
 
 	// Calculate the PWM value
-	out_pwm =  - BUCK_KP * v_buck / 16
-				+ buck_pwm_int / 16
-				- BUCK_KD * ( v_buck - old_v_buck ) / 16;
-
-	// Limit the PWM to min and max and limit also the integrator
-	if (out_pwm > (BUCK_PWM_MAX+BOOST_PWM_MAX)) {
-		out_pwm = (BUCK_PWM_MAX+BOOST_PWM_MAX);
-		buck_pwm_int = ( (BUCK_PWM_MAX+BOOST_PWM_MAX) + (BUCK_KP * v_buck / 16) ) * 16;
-	}
-	if (out_pwm < 0) {
-		out_pwm = 0;
-		buck_pwm_int = ( 0 + (BUCK_KP *  v_buck / 16) ) * 16;
+	if (buckboost_mode == BUCK_MODE) {
+		out_pwm =  - BUCK_KP * v_buck / 16
+					+ buck_pwm_int / 16
+					- BUCK_KD * ( v_buck - old_v_buck ) / 16;
+	} else {
+		out_pwm =  - BOOST_KP * v_buck / 16
+					+ buck_pwm_int / 16;
 	}
 
 	// 100% if voltage drop feature is switched off
@@ -119,9 +120,17 @@ void BUCKB_Task(void) {
 	if (out_pwm<= BUCK_PWM_MAX) {
 		PWM_SetBuckPWM(out_pwm);
 		PWM_SetBoostPWM(0);
+		buckboost_mode = BUCK_MODE;
 	} else {
 		PWM_SetBuckPWM(BUCK_PWM_MAX);
-		PWM_SetBoostPWM(out_pwm-BUCK_PWM_MAX);
+
+		// Fast overvoltage shutdown of boost
+		if (v_buck > 400)
+			PWM_SetBoostPWM(0);
+		else
+			PWM_SetBoostPWM(out_pwm-BUCK_PWM_MAX);
+
+		buckboost_mode = BOOST_MODE;
 	}
 
 
