@@ -24,9 +24,11 @@
 #define PWM_H_
 
 #define BUCK_PWM_MAX 128
+#define BOOST_PWM_MAX 64
 
 //Function prototypes
 void PWM_Init(void);
 void PWM_SetBuckPWM(unsigned char val);
+void PWM_SetBoostPWM(unsigned char val);
 
 #endif /* PWM_H_ */

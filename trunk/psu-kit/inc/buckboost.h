@@ -1,9 +1,9 @@
 /*
  *  Project:      psu-kit
- *  File:         buck.h
+ *  File:         buckboost.h
  *  Author:       gerd bartelt - www.sebulli.com
  *
- *  Description:  header file for buck.c
+ *  Description:  header file for buckboost.c
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,11 +21,11 @@
  */
 
 
-#ifndef BUCK_H_
-#define BUCK_H_
+#ifndef BUCKBOOST_H_
+#define BUCKBOOST_H_
 
 // Function prototypes
-void BUCK_Init(void);
-void BUCK_Task(void);
+void BUCKB_Init(void);
+void BUCKB_Task(void);
 
-#endif /* BUCK_H_ */
+#endif /* BUCKBOOST_H_ */
